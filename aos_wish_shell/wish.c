@@ -10,34 +10,41 @@ void printError(void) {
   write(STDERR_FILENO, error_message, strlen(error_message));
 }
 
+void freeArray(char **pathArray) {
+    if (!pathArray) {
+        return;
+    }
+
+    for (int i = 0; pathArray[i] != NULL; i++) {
+        free(pathArray[i]);
+    }
+    free(pathArray);
+}
+
 char **addPath(char **path, char *inputPath) {
     printf("a");
-    // if (path) {
-    //     for (int i = 0; path[i]; i++) {
-    //         free(path[i]);
-    //     }
-    //     free(path);
-    // }
-printf("b");    
-    // char **newPath = NULL;
-
+    freeArray(path);
+    printf("b");    
+    
+    char **newPath = NULL;
     char *token = strtok(inputPath, " ");
     int currentPathCount = 0;
-printf("c");
+    printf("c");
     while (token != NULL) {
         printf("d");
-        char **tempArray = realloc(path, sizeof(char *) * (currentPathCount + 2));
-        
-        path = tempArray;
+        char **tempArray = realloc(newPath, sizeof(char *) * (currentPathCount + 2));
+        newPath = tempArray;
+
         path[currentPathCount] = strdup(token);
         currentPathCount++;
+        path[currentPathCount] = NULL;
         printf("added: %s\n", token);
         printf(path[currentPathCount]);
 
         token = strtok(inputPath, " ");
     }
 
-    return path;
+    return newPath;
 }
 
 int main(int argc, char *argv[]) {
@@ -55,7 +62,8 @@ int main(int argc, char *argv[]) {
     size_t len = 0;
     size_t read;
 
-    char **paths = {"/add", "/dasdasdb"};
+    char **paths = malloc(sizeof(char *) * 2);
+    paths[0] = strdup("/bin");
 
 
     while (1) {
